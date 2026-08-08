@@ -4,15 +4,13 @@ from datetime import datetime
 
 
 class UserRegisterSchema(Schema):
-    username: str
-    email: str
+    full_name: str
+    phone: str
     password: str
-    phone: Optional[str] = None
-    address: Optional[str] = None
 
 
 class UserLoginSchema(Schema):
-    username: str
+    phone: str
     password: str
 
 

@@ -21,19 +21,37 @@ class AuthBearer(HttpBearer):
 
 @router.post("/register", response={201: TokenSchema, 400: ErrorSchema})
 def register(request, payload: UserRegisterSchema):
-    """Register a new user"""
-    if User.objects.filter(username=payload.username).exists():
-        return 400, {"error": "Username already taken"}
+    """Register a new user with full name, phone, and password"""
+    # Check if phone already exists
+    if User.objects.filter(phone=payload.phone).exists():
+        return 400, {"error": "Phone number already registered"}
     
-    if User.objects.filter(email=payload.email).exists():
-        return 400, {"error": "Email already registered"}
+    # Generate username from phone (remove non-numeric characters)
+    username = ''.join(filter(str.isdigit, payload.phone))
+    
+    # If username exists, append a number
+    base_username = username
+    counter = 1
+    while User.objects.filter(username=username).exists():
+        username = f"{base_username}{counter}"
+        counter += 1
+    
+    # Generate email from phone
+    email = f"{username}@phone.local"
+    
+    # Split full name into first and last name
+    name_parts = payload.full_name.strip().split(maxsplit=1)
+    first_name = name_parts[0] if name_parts else ''
+    last_name = name_parts[1] if len(name_parts) > 1 else ''
 
     user = User.objects.create_user(
-        username=payload.username,
-        email=payload.email,
+        username=username,
+        email=email,
         password=payload.password,
-        phone=payload.phone or '',
-        address=payload.address or '',
+        phone=payload.phone,
+        first_name=first_name,
+        last_name=last_name,
+        address='',
     )
     
     refresh = RefreshToken.for_user(user)
@@ -45,17 +63,23 @@ def register(request, payload: UserRegisterSchema):
 
 @router.post("/login", response={200: TokenSchema, 401: ErrorSchema})
 def login(request, payload: UserLoginSchema):
-    """Login user and return JWT tokens"""
-    user = authenticate(username=payload.username, password=payload.password)
-    
-    if not user:
-        return 401, {"error": "Invalid credentials"}
+    """Login user with phone and password and return JWT tokens"""
+    try:
+        # Find user by phone number
+        user = User.objects.get(phone=payload.phone)
+        # Authenticate using the username and password
+        authenticated_user = authenticate(username=user.username, password=payload.password)
+        
+        if not authenticated_user:
+            return 401, {"error": "Invalid credentials"}
 
-    refresh = RefreshToken.for_user(user)
-    return 200, {
-        "access": str(refresh.access_token),
-        "refresh": str(refresh),
-    }
+        refresh = RefreshToken.for_user(authenticated_user)
+        return 200, {
+            "access": str(refresh.access_token),
+            "refresh": str(refresh),
+        }
+    except User.DoesNotExist:
+        return 401, {"error": "Invalid credentials"}
 
 
 @router.get("/me", response=UserOutSchema, auth=AuthBearer())

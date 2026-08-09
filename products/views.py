@@ -37,12 +37,15 @@ def create_category(request, payload: CategoryCreateSchema):
 # Product endpoints
 @router.get("/products", response=List[ProductListSchema])
 @paginate
-def list_products(request, category: str = None, is_featured: bool = None, search: str = None):
+def list_products(request, category: str = None, is_featured: bool = None, search: str = None, exclude_category: str = None):
     """Get all products with optional filters"""
     products = Product.objects.filter(is_active=True).select_related('category')
     
     if category:
         products = products.filter(category__slug=category)
+    
+    if exclude_category:
+        products = products.exclude(category__slug=exclude_category)
     
     if is_featured is not None:
         products = products.filter(is_featured=is_featured)
@@ -51,6 +54,38 @@ def list_products(request, category: str = None, is_featured: bool = None, searc
         products = products.filter(name__icontains=search)
     
     return products
+
+
+@router.get("/products/featured/mixed", response=List[ProductListSchema])
+def get_mixed_featured_products(request, limit: int = 8):
+    """Get a balanced mix of featured products from different categories including sweets"""
+    from django.db.models import Count
+    import random
+    
+    # Get featured products grouped by category
+    categories = Category.objects.filter(
+        is_active=True,
+        products__is_featured=True,
+        products__is_active=True
+    ).distinct()
+    
+    featured_products = []
+    products_per_category = max(1, limit // categories.count()) if categories.count() > 0 else 1
+    
+    for category in categories:
+        category_products = list(
+            Product.objects.filter(
+                category=category,
+                is_featured=True,
+                is_active=True
+            )[:products_per_category]
+        )
+        featured_products.extend(category_products)
+    
+    # Shuffle to mix categories
+    random.shuffle(featured_products)
+    
+    return featured_products[:limit]
 
 
 @router.get("/products/{slug}", response=ProductDetailSchema)

@@ -76,7 +76,7 @@ class Command(BaseCommand):
             if created:
                 self.stdout.write(f'Created category: {category.name}')
 
-        # Create products - Chicken Food Items
+        # Create products - Chicken Food Items with Real Images
         products_data = [
             # Chicken Starters
             {
@@ -87,7 +87,8 @@ class Command(BaseCommand):
                 'price': Decimal('299.00'),
                 'compare_price': Decimal('349.00'),
                 'stock': 50,
-                'is_featured': True
+                'is_featured': True,
+                'image': 'https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=800&q=80'
             },
             {
                 'category': 'chicken-starters',
@@ -97,7 +98,8 @@ class Command(BaseCommand):
                 'price': Decimal('279.00'),
                 'compare_price': Decimal('329.00'),
                 'stock': 45,
-                'is_featured': True
+                'is_featured': True,
+                'image': 'https://images.pexels.com/photos/6287519/pexels-photo-6287519.jpeg?auto=compress&cs=tinysrgb&w=800'
             },
             {
                 'category': 'chicken-starters',
@@ -107,7 +109,8 @@ class Command(BaseCommand):
                 'price': Decimal('329.00'),
                 'compare_price': Decimal('379.00'),
                 'stock': 40,
-                'is_featured': True
+                'is_featured': True,
+                'image': 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=800&q=80'
             },
             {
                 'category': 'chicken-starters',
@@ -116,7 +119,8 @@ class Command(BaseCommand):
                 'description': 'Spicy buffalo chicken wings with tangy sauce (8 pieces)',
                 'price': Decimal('349.00'),
                 'stock': 38,
-                'is_featured': False
+                'is_featured': False,
+                'image': 'https://images.pexels.com/photos/1410236/pexels-photo-1410236.jpeg?auto=compress&cs=tinysrgb&w=800'
             },
             {
                 'category': 'chicken-starters',
@@ -125,7 +129,8 @@ class Command(BaseCommand):
                 'description': 'Minced chicken kebabs with aromatic spices (4 pieces)',
                 'price': Decimal('289.00'),
                 'stock': 42,
-                'is_featured': False
+                'is_featured': False,
+                'image': 'https://images.unsplash.com/photo-1603360946369-dc9bb6258143?w=800&q=80'
             },
             {
                 'category': 'chicken-starters',
@@ -134,7 +139,8 @@ class Command(BaseCommand):
                 'description': 'Chicken fritters in spiced gram flour batter',
                 'price': Decimal('249.00'),
                 'stock': 50,
-                'is_featured': False
+                'is_featured': False,
+                'image': 'https://images.pexels.com/photos/8753657/pexels-photo-8753657.jpeg?auto=compress&cs=tinysrgb&w=800'
             },
             
             # Chicken Curries
@@ -146,7 +152,8 @@ class Command(BaseCommand):
                 'price': Decimal('349.00'),
                 'compare_price': Decimal('399.00'),
                 'stock': 60,
-                'is_featured': True
+                'is_featured': True,
+                'image': 'https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=800&q=80'
             },
             {
                 'category': 'chicken-curries',
@@ -156,7 +163,8 @@ class Command(BaseCommand):
                 'price': Decimal('339.00'),
                 'compare_price': Decimal('389.00'),
                 'stock': 55,
-                'is_featured': True
+                'is_featured': True,
+                'image': 'https://images.pexels.com/photos/2474661/pexels-photo-2474661.jpeg?auto=compress&cs=tinysrgb&w=800'
             },
             {
                 'category': 'chicken-curries',
@@ -165,7 +173,8 @@ class Command(BaseCommand):
                 'description': 'Grilled chicken tikka in creamy tomato masala gravy',
                 'price': Decimal('359.00'),
                 'stock': 50,
-                'is_featured': True
+                'is_featured': True,
+                'image': 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=800&q=80'
             },
             {
                 'category': 'chicken-curries',
@@ -174,7 +183,8 @@ class Command(BaseCommand):
                 'description': 'Mild, creamy chicken curry with cashew and yogurt',
                 'price': Decimal('329.00'),
                 'stock': 48,
-                'is_featured': False
+                'is_featured': False,
+                'image': 'https://images.pexels.com/photos/2123755/pexels-photo-2123755.jpeg?auto=compress&cs=tinysrgb&w=800'
             },
             {
                 'category': 'chicken-curries',
@@ -183,7 +193,8 @@ class Command(BaseCommand):
                 'description': 'Spicy Goan-style chicken curry with vinegar and red chilies',
                 'price': Decimal('339.00'),
                 'stock': 45,
-                'is_featured': False
+                'is_featured': False,
+                'image': 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=800&q=80'
             },
             {
                 'category': 'chicken-curries',
@@ -192,7 +203,8 @@ class Command(BaseCommand):
                 'description': 'South Indian spicy chicken curry with roasted spices',
                 'price': Decimal('349.00'),
                 'stock': 42,
-                'is_featured': False
+                'is_featured': False,
+                'image': 'https://images.pexels.com/photos/5410400/pexels-photo-5410400.jpeg?auto=compress&cs=tinysrgb&w=800'
             },
             {
                 'category': 'chicken-curries',
@@ -201,7 +213,8 @@ class Command(BaseCommand):
                 'description': 'Chicken cooked in spinach gravy with aromatic spices',
                 'price': Decimal('319.00'),
                 'stock': 40,
-                'is_featured': False
+                'is_featured': False,
+                'image': 'https://images.unsplash.com/photo-1567337710282-00832b415979?w=800&q=80'
             },
             
             # Chicken Biryani
@@ -213,7 +226,8 @@ class Command(BaseCommand):
                 'price': Decimal('349.00'),
                 'compare_price': Decimal('399.00'),
                 'stock': 70,
-                'is_featured': True
+                'is_featured': True,
+                'image': 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=800&q=80'
             },
             {
                 'category': 'chicken-biryani',
@@ -223,7 +237,8 @@ class Command(BaseCommand):
                 'price': Decimal('369.00'),
                 'compare_price': Decimal('419.00'),
                 'stock': 65,
-                'is_featured': True
+                'is_featured': True,
+                'image': 'https://images.pexels.com/photos/3616956/pexels-photo-3616956.jpeg?auto=compress&cs=tinysrgb&w=800'
             },
             {
                 'category': 'chicken-biryani',
@@ -232,7 +247,8 @@ class Command(BaseCommand):
                 'description': 'Bengali-style chicken biryani with potato and egg',
                 'price': Decimal('339.00'),
                 'stock': 60,
-                'is_featured': False
+                'is_featured': False,
+                'image': 'https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=800&q=80'
             },
             {
                 'category': 'chicken-biryani',
@@ -241,7 +257,8 @@ class Command(BaseCommand):
                 'description': 'Biryani made with grilled chicken tikka pieces',
                 'price': Decimal('379.00'),
                 'stock': 55,
-                'is_featured': False
+                'is_featured': False,
+                'image': 'https://images.pexels.com/photos/8753657/pexels-photo-8753657.jpeg?auto=compress&cs=tinysrgb&w=800'
             },
             {
                 'category': 'chicken-biryani',
@@ -250,7 +267,8 @@ class Command(BaseCommand):
                 'description': 'Chinese-style fried rice with chicken and vegetables',
                 'price': Decimal('249.00'),
                 'stock': 80,
-                'is_featured': False
+                'is_featured': False,
+                'image': 'https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=800&q=80'
             },
             {
                 'category': 'chicken-biryani',
@@ -259,7 +277,8 @@ class Command(BaseCommand):
                 'description': 'Fragrant rice cooked with chicken and whole spices',
                 'price': Decimal('279.00'),
                 'stock': 70,
-                'is_featured': False
+                'is_featured': False,
+                'image': 'https://images.pexels.com/photos/2456435/pexels-photo-2456435.jpeg?auto=compress&cs=tinysrgb&w=800'
             },
             
             # Tandoori Chicken
@@ -271,7 +290,8 @@ class Command(BaseCommand):
                 'price': Decimal('599.00'),
                 'compare_price': Decimal('699.00'),
                 'stock': 30,
-                'is_featured': True
+                'is_featured': True,
+                'image': 'https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?w=800&q=80'
             },
             {
                 'category': 'tandoori-chicken',
@@ -281,7 +301,8 @@ class Command(BaseCommand):
                 'price': Decimal('329.00'),
                 'compare_price': Decimal('379.00'),
                 'stock': 45,
-                'is_featured': True
+                'is_featured': True,
+                'image': 'https://images.pexels.com/photos/6287345/pexels-photo-6287345.jpeg?auto=compress&cs=tinysrgb&w=800'
             },
             {
                 'category': 'tandoori-chicken',
@@ -290,7 +311,8 @@ class Command(BaseCommand):
                 'description': 'Creamy, mildly spiced chicken tikka with cheese',
                 'price': Decimal('319.00'),
                 'stock': 40,
-                'is_featured': False
+                'is_featured': False,
+                'image': 'https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?w=800&q=80'
             },
             {
                 'category': 'tandoori-chicken',
@@ -299,7 +321,8 @@ class Command(BaseCommand):
                 'description': 'Green chicken tikka marinated with mint and coriander',
                 'price': Decimal('309.00'),
                 'stock': 38,
-                'is_featured': False
+                'is_featured': False,
+                'image': 'https://images.pexels.com/photos/6287519/pexels-photo-6287519.jpeg?auto=compress&cs=tinysrgb&w=800'
             },
             {
                 'category': 'tandoori-chicken',
@@ -308,7 +331,8 @@ class Command(BaseCommand):
                 'description': 'Soft and silky chicken kebab with mild spices (6 pieces)',
                 'price': Decimal('329.00'),
                 'stock': 35,
-                'is_featured': False
+                'is_featured': False,
+                'image': 'https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?w=800&q=80'
             },
             
             # Chicken Chinese
@@ -320,7 +344,8 @@ class Command(BaseCommand):
                 'price': Decimal('299.00'),
                 'compare_price': Decimal('349.00'),
                 'stock': 55,
-                'is_featured': True
+                'is_featured': True,
+                'image': 'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=800&q=80'
             },
             {
                 'category': 'chicken-chinese',
@@ -329,7 +354,8 @@ class Command(BaseCommand):
                 'description': 'Deep-fried chicken in spicy Manchurian sauce',
                 'price': Decimal('289.00'),
                 'stock': 50,
-                'is_featured': True
+                'is_featured': True,
+                'image': 'https://images.pexels.com/photos/15146310/pexels-photo-15146310.jpeg?auto=compress&cs=tinysrgb&w=800'
             },
             {
                 'category': 'chicken-chinese',
@@ -338,7 +364,8 @@ class Command(BaseCommand):
                 'description': 'Spicy Schezwan sauce-based chicken stir-fry',
                 'price': Decimal('309.00'),
                 'stock': 48,
-                'is_featured': False
+                'is_featured': False,
+                'image': 'https://images.unsplash.com/photo-1617093727343-374698b1b08d?w=800&q=80'
             },
             {
                 'category': 'chicken-chinese',
@@ -347,7 +374,8 @@ class Command(BaseCommand):
                 'description': 'Stir-fried noodles with chicken and vegetables',
                 'price': Decimal('249.00'),
                 'stock': 65,
-                'is_featured': False
+                'is_featured': False,
+                'image': 'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=800&q=80'
             },
             {
                 'category': 'chicken-chinese',
@@ -356,7 +384,8 @@ class Command(BaseCommand):
                 'description': 'Spicy Schezwan noodles with chicken',
                 'price': Decimal('269.00'),
                 'stock': 60,
-                'is_featured': False
+                'is_featured': False,
+                'image': 'https://images.pexels.com/photos/2092906/pexels-photo-2092906.jpeg?auto=compress&cs=tinysrgb&w=800'
             },
             {
                 'category': 'chicken-chinese',
@@ -365,7 +394,8 @@ class Command(BaseCommand):
                 'description': 'Hot and spicy Szechuan-style chicken fried rice',
                 'price': Decimal('259.00'),
                 'stock': 58,
-                'is_featured': False
+                'is_featured': False,
+                'image': 'https://images.pexels.com/photos/7363673/pexels-photo-7363673.jpeg?auto=compress&cs=tinysrgb&w=800'
             },
             
             # Chicken Fast Food
@@ -377,7 +407,8 @@ class Command(BaseCommand):
                 'price': Decimal('149.00'),
                 'compare_price': Decimal('179.00'),
                 'stock': 80,
-                'is_featured': True
+                'is_featured': True,
+                'image': 'https://images.unsplash.com/photo-1606755962773-d324e0a13086?w=800&q=80'
             },
             {
                 'category': 'chicken-fast-food',
@@ -387,7 +418,8 @@ class Command(BaseCommand):
                 'price': Decimal('169.00'),
                 'compare_price': Decimal('199.00'),
                 'stock': 75,
-                'is_featured': True
+                'is_featured': True,
+                'image': 'https://images.pexels.com/photos/1639557/pexels-photo-1639557.jpeg?auto=compress&cs=tinysrgb&w=800'
             },
             {
                 'category': 'chicken-fast-food',
@@ -396,7 +428,8 @@ class Command(BaseCommand):
                 'description': 'Extra spicy chicken burger with jalapeños',
                 'price': Decimal('159.00'),
                 'stock': 70,
-                'is_featured': False
+                'is_featured': False,
+                'image': 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800&q=80'
             },
             {
                 'category': 'chicken-fast-food',
@@ -405,7 +438,8 @@ class Command(BaseCommand):
                 'description': 'Crispy chicken nuggets with dipping sauce (10 pieces)',
                 'price': Decimal('199.00'),
                 'stock': 90,
-                'is_featured': False
+                'is_featured': False,
+                'image': 'https://images.unsplash.com/photo-1562967914-608f82629710?w=800&q=80'
             },
             {
                 'category': 'chicken-fast-food',
@@ -414,7 +448,8 @@ class Command(BaseCommand):
                 'description': 'Bite-sized crispy chicken pieces (200g)',
                 'price': Decimal('179.00'),
                 'stock': 85,
-                'is_featured': False
+                'is_featured': False,
+                'image': 'https://images.pexels.com/photos/60616/fried-chicken-chicken-fried-crunchy-60616.jpeg?auto=compress&cs=tinysrgb&w=800'
             },
             {
                 'category': 'chicken-fast-food',
@@ -424,7 +459,8 @@ class Command(BaseCommand):
                 'price': Decimal('399.00'),
                 'compare_price': Decimal('449.00'),
                 'stock': 50,
-                'is_featured': True
+                'is_featured': True,
+                'image': 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800&q=80'
             },
             
             # Chicken Rolls & Wraps
@@ -435,7 +471,8 @@ class Command(BaseCommand):
                 'description': 'Kolkata-style chicken roll wrapped in paratha',
                 'price': Decimal('149.00'),
                 'stock': 70,
-                'is_featured': True
+                'is_featured': True,
+                'image': 'https://images.unsplash.com/photo-1626074353765-517a681e40be?w=800&q=80'
             },
             {
                 'category': 'chicken-rolls-wraps',
@@ -445,7 +482,8 @@ class Command(BaseCommand):
                 'price': Decimal('169.00'),
                 'compare_price': Decimal('199.00'),
                 'stock': 65,
-                'is_featured': True
+                'is_featured': True,
+                'image': 'https://images.pexels.com/photos/7599735/pexels-photo-7599735.jpeg?auto=compress&cs=tinysrgb&w=800'
             },
             {
                 'category': 'chicken-rolls-wraps',
@@ -454,7 +492,8 @@ class Command(BaseCommand):
                 'description': 'Middle-Eastern style chicken wrap with garlic sauce',
                 'price': Decimal('179.00'),
                 'stock': 60,
-                'is_featured': False
+                'is_featured': False,
+                'image': 'https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=800&q=80'
             },
             {
                 'category': 'chicken-rolls-wraps',
@@ -463,7 +502,8 @@ class Command(BaseCommand):
                 'description': 'Grilled chicken wrapped in tortilla with fresh veggies',
                 'price': Decimal('159.00'),
                 'stock': 68,
-                'is_featured': False
+                'is_featured': False,
+                'image': 'https://images.pexels.com/photos/2474658/pexels-photo-2474658.jpeg?auto=compress&cs=tinysrgb&w=800'
             },
             {
                 'category': 'chicken-rolls-wraps',
@@ -472,7 +512,8 @@ class Command(BaseCommand):
                 'description': 'Mumbai-style chicken frankie with special masala',
                 'price': Decimal('139.00'),
                 'stock': 75,
-                'is_featured': False
+                'is_featured': False,
+                'image': 'https://images.unsplash.com/photo-1626074353765-517a681e40be?w=800&q=80'
             },
             
             # Fried Chicken
@@ -484,7 +525,8 @@ class Command(BaseCommand):
                 'price': Decimal('299.00'),
                 'compare_price': Decimal('349.00'),
                 'stock': 55,
-                'is_featured': True
+                'is_featured': True,
+                'image': 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=800&q=80'
             },
             {
                 'category': 'fried-chicken',
@@ -494,7 +536,8 @@ class Command(BaseCommand):
                 'price': Decimal('549.00'),
                 'compare_price': Decimal('649.00'),
                 'stock': 40,
-                'is_featured': True
+                'is_featured': True,
+                'image': 'https://images.pexels.com/photos/60616/fried-chicken-chicken-fried-crunchy-60616.jpeg?auto=compress&cs=tinysrgb&w=800'
             },
             {
                 'category': 'fried-chicken',
@@ -503,7 +546,8 @@ class Command(BaseCommand):
                 'description': 'Extra hot and spicy fried chicken (4 pieces)',
                 'price': Decimal('319.00'),
                 'stock': 48,
-                'is_featured': False
+                'is_featured': False,
+                'image': 'https://images.pexels.com/photos/1410236/pexels-photo-1410236.jpeg?auto=compress&cs=tinysrgb&w=800'
             },
             {
                 'category': 'fried-chicken',
@@ -513,7 +557,8 @@ class Command(BaseCommand):
                 'price': Decimal('379.00'),
                 'compare_price': Decimal('429.00'),
                 'stock': 45,
-                'is_featured': True
+                'is_featured': True,
+                'image': 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=800&q=80'
             },
             {
                 'category': 'fried-chicken',
@@ -522,7 +567,8 @@ class Command(BaseCommand):
                 'description': 'Crispy breaded chicken strips (6 pieces)',
                 'price': Decimal('249.00'),
                 'stock': 60,
-                'is_featured': False
+                'is_featured': False,
+                'image': 'https://images.pexels.com/photos/2338407/pexels-photo-2338407.jpeg?auto=compress&cs=tinysrgb&w=800'
             },
             
             # Grilled Chicken
@@ -533,7 +579,8 @@ class Command(BaseCommand):
                 'description': 'Healthy grilled chicken breast with herbs',
                 'price': Decimal('289.00'),
                 'stock': 50,
-                'is_featured': True
+                'is_featured': True,
+                'image': 'https://images.unsplash.com/photo-1532550907401-a500c9a57435?w=800&q=80'
             },
             {
                 'category': 'grilled-chicken',
@@ -543,7 +590,8 @@ class Command(BaseCommand):
                 'price': Decimal('329.00'),
                 'compare_price': Decimal('379.00'),
                 'stock': 45,
-                'is_featured': True
+                'is_featured': True,
+                'image': 'https://images.unsplash.com/photo-1633964913295-ceb43826115f?w=800&q=80'
             },
             {
                 'category': 'grilled-chicken',
@@ -552,7 +600,8 @@ class Command(BaseCommand):
                 'description': 'Grilled chicken with spicy peri peri seasoning',
                 'price': Decimal('339.00'),
                 'stock': 42,
-                'is_featured': False
+                'is_featured': False,
+                'image': 'https://images.pexels.com/photos/8879565/pexels-photo-8879565.jpeg?auto=compress&cs=tinysrgb&w=800'
             },
             {
                 'category': 'grilled-chicken',
@@ -561,7 +610,8 @@ class Command(BaseCommand):
                 'description': 'Grilled chicken marinated with lemon and herbs',
                 'price': Decimal('299.00'),
                 'stock': 48,
-                'is_featured': False
+                'is_featured': False,
+                'image': 'https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=800&q=80'
             },
             {
                 'category': 'grilled-chicken',
@@ -570,7 +620,8 @@ class Command(BaseCommand):
                 'description': 'Fresh salad with grilled chicken and vinaigrette',
                 'price': Decimal('269.00'),
                 'stock': 55,
-                'is_featured': False
+                'is_featured': False,
+                'image': 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&q=80'
             },
             
             # Chicken Combo Meals
@@ -582,7 +633,8 @@ class Command(BaseCommand):
                 'price': Decimal('399.00'),
                 'compare_price': Decimal('499.00'),
                 'stock': 50,
-                'is_featured': True
+                'is_featured': True,
+                'image': 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=800&q=80'
             },
             {
                 'category': 'chicken-combo-meals',
@@ -592,7 +644,8 @@ class Command(BaseCommand):
                 'price': Decimal('449.00'),
                 'compare_price': Decimal('549.00'),
                 'stock': 45,
-                'is_featured': True
+                'is_featured': True,
+                'image': 'https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=800&q=80'
             },
             {
                 'category': 'chicken-combo-meals',
@@ -601,7 +654,8 @@ class Command(BaseCommand):
                 'description': '4pc fried chicken, fries, coleslaw, and soft drink',
                 'price': Decimal('399.00'),
                 'stock': 48,
-                'is_featured': False
+                'is_featured': False,
+                'image': 'https://images.pexels.com/photos/60616/fried-chicken-chicken-fried-crunchy-60616.jpeg?auto=compress&cs=tinysrgb&w=800'
             },
             {
                 'category': 'chicken-combo-meals',
@@ -610,7 +664,8 @@ class Command(BaseCommand):
                 'description': 'Half tandoori chicken with naan, dal, and raita',
                 'price': Decimal('429.00'),
                 'stock': 42,
-                'is_featured': False
+                'is_featured': False,
+                'image': 'https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?w=800&q=80'
             },
             {
                 'category': 'chicken-combo-meals',
@@ -620,7 +675,8 @@ class Command(BaseCommand):
                 'price': Decimal('299.00'),
                 'compare_price': Decimal('349.00'),
                 'stock': 55,
-                'is_featured': False
+                'is_featured': False,
+                'image': 'https://images.unsplash.com/photo-1626074353765-517a681e40be?w=800&q=80'
             },
             {
                 'category': 'chicken-combo-meals',
@@ -630,7 +686,8 @@ class Command(BaseCommand):
                 'price': Decimal('999.00'),
                 'compare_price': Decimal('1199.00'),
                 'stock': 25,
-                'is_featured': True
+                'is_featured': True,
+                'image': 'https://images.pexels.com/photos/4551832/pexels-photo-4551832.jpeg?auto=compress&cs=tinysrgb&w=800'
             }
         ]
 

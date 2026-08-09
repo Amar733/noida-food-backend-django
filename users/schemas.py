@@ -16,12 +16,10 @@ class UserLoginSchema(Schema):
 
 class UserOutSchema(Schema):
     id: int
-    username: str
-    email: str
     phone: str
-    address: str
     first_name: str
     last_name: str
+    address: str
     date_joined: datetime
 
     class Config:

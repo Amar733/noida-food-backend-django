@@ -26,18 +26,18 @@ def register(request, payload: UserRegisterSchema):
     if User.objects.filter(phone=payload.phone).exists():
         return 400, {"error": "Phone number already registered"}
     
-    # Generate username from phone (remove non-numeric characters)
-    username = ''.join(filter(str.isdigit, payload.phone))
+    # Use phone as username (since Django requires a unique username)
+    username = payload.phone
     
-    # If username exists, append a number
+    # If username exists, append a number (safety check)
     base_username = username
     counter = 1
     while User.objects.filter(username=username).exists():
-        username = f"{base_username}{counter}"
+        username = f"{base_username}_{counter}"
         counter += 1
     
-    # Generate email from phone
-    email = f"{username}@phone.local"
+    # Use empty email or make it optional
+    email = ""
     
     # Split full name into first and last name
     name_parts = payload.full_name.strip().split(maxsplit=1)
@@ -93,7 +93,8 @@ def update_profile(request, payload: dict):
     """Update user profile"""
     user = request.auth
     
-    for field in ['first_name', 'last_name', 'phone', 'address', 'email']:
+    # Only allow updating these fields
+    for field in ['first_name', 'last_name', 'phone', 'address']:
         if field in payload:
             setattr(user, field, payload[field])
     

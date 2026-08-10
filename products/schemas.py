@@ -1,5 +1,5 @@
 from ninja import Schema
-from typing import Optional, List
+from typing import Optional, List, Dict, Any
 from datetime import datetime
 from decimal import Decimal
 
@@ -21,6 +21,54 @@ class CategoryCreateSchema(Schema):
     slug: str
     description: Optional[str] = ""
     is_active: Optional[bool] = True
+
+
+# New schemas for nested products response
+class ProductItemSchema(Schema):
+    id: int
+    name: str
+    slug: str
+    price: str
+    compare_price: Optional[str] = None
+    stock: int
+    image: Optional[str] = None
+    is_featured: bool
+    discount_percentage: int
+
+    class Config:
+        from_attributes = True
+
+
+class SubCategorySchema(Schema):
+    id: int
+    name: str
+    slug: str
+    description: str
+    image: Optional[str] = None
+    is_active: bool
+    items: List[ProductItemSchema]
+
+    class Config:
+        from_attributes = True
+
+
+class CategoryWithSubCategoriesSchema(Schema):
+    id: int
+    name: str
+    slug: str
+    description: str
+    image: Optional[str] = None
+    is_active: bool
+    sub_categories: Dict[str, Dict[str, List[SubCategorySchema]]]
+
+    class Config:
+        from_attributes = True
+
+
+class ProductsResponseSchema(Schema):
+    status: str
+    message: str
+    data: Dict[str, Any]
 
 
 class ProductImageSchema(Schema):

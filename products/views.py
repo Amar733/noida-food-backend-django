@@ -1,59 +1,185 @@
 from ninja import Router
 from ninja.pagination import paginate
-from typing import List
+from typing import List, Dict, Any
 from django.shortcuts import get_object_or_404
+from collections import defaultdict
 from .models import Category, Product, Review, Wishlist, ProductImage
 from .schemas import (
     CategorySchema, CategoryCreateSchema,
     ProductListSchema, ProductDetailSchema, ProductCreateSchema,
     ReviewSchema, ReviewCreateSchema,
-    WishlistSchema, WishlistAddSchema
+    WishlistSchema, WishlistAddSchema,
+    ProductItemSchema, SubCategorySchema
 )
 from users.views import AuthBearer
 
 router = Router()
 
 
-# Category endpoints
-@router.get("/categories", response=List[CategorySchema])
-def list_categories(request):
-    """Get all active categories"""
-    return Category.objects.filter(is_active=True)
-
-
-@router.get("/categories/{slug}", response=CategorySchema)
-def get_category(request, slug: str):
-    """Get category by slug"""
-    return get_object_or_404(Category, slug=slug, is_active=True)
-
-
-@router.post("/categories", response={201: CategorySchema}, auth=AuthBearer())
-def create_category(request, payload: CategoryCreateSchema):
-    """Create a new category (admin only)"""
-    category = Category.objects.create(**payload.dict())
-    return 201, category
-
-
 # Product endpoints
-@router.get("/products", response=List[ProductListSchema])
-@paginate
-def list_products(request, category: str = None, is_featured: bool = None, search: str = None, exclude_category: str = None):
-    """Get all products with optional filters"""
-    products = Product.objects.filter(is_active=True).select_related('category')
+@router.get("/products")
+def list_products(request):
+    """Get all products organized by categories and sub-categories"""
+    # Fetch all active categories and products
+    categories = Category.objects.filter(is_active=True).prefetch_related('products')
     
-    if category:
-        products = products.filter(category__slug=category)
+    # Build the response structure
+    categories_data = []
+    total_items = 0
     
-    if exclude_category:
-        products = products.exclude(category__slug=exclude_category)
+    for category in categories:
+        products = category.products.filter(is_active=True)
+        
+        if not products.exists():
+            continue
+        
+        # Group products by parent category name
+        # Determine the grouping strategy based on category name
+        category_slug = category.slug
+        category_name = category.name.lower()
+        
+        # Create sub_categories structure
+        sub_categories = {}
+        
+        # For chicken category - group by type
+        if 'chicken' in category_slug:
+            sub_category_groups = defaultdict(list)
+            for product in products:
+                product_name_lower = product.name.lower()
+                # Categorize based on product name
+                if any(word in product_name_lower for word in ['starter', 'appetizer', 'tikka', 'kebab', 'wings']):
+                    group_key = 'starters'
+                elif any(word in product_name_lower for word in ['curry', 'masala', 'korma', 'vindaloo']):
+                    group_key = 'curries'
+                elif 'biryani' in product_name_lower:
+                    group_key = 'biryani'
+                elif any(word in product_name_lower for word in ['tandoori', 'grilled']):
+                    group_key = 'tandoori'
+                elif any(word in product_name_lower for word in ['chinese', 'manchurian', 'chilli']):
+                    group_key = 'chinese'
+                elif any(word in product_name_lower for word in ['burger', 'pizza', 'fries', 'sandwich']):
+                    group_key = 'fast_food'
+                elif any(word in product_name_lower for word in ['roll', 'wrap', 'kathi']):
+                    group_key = 'rolls_wraps'
+                elif any(word in product_name_lower for word in ['fried', 'crispy']):
+                    group_key = 'fried_chicken'
+                elif 'grilled' in product_name_lower:
+                    group_key = 'grilled_chicken'
+                elif any(word in product_name_lower for word in ['combo', 'meal', 'deal']):
+                    group_key = 'combo_meals'
+                else:
+                    group_key = 'starters'  # default
+                
+                sub_category_groups[group_key].append(product)
+            
+            # Create chicken sub_categories structure
+            chicken_groups = {}
+            for group_key, group_products in sub_category_groups.items():
+                chicken_groups[group_key] = [{
+                    'id': category.id,
+                    'name': category.name,
+                    'slug': category.slug,
+                    'description': category.description,
+                    'image': category.image,
+                    'is_active': category.is_active,
+                    'items': [
+                        {
+                            'id': p.id,
+                            'name': p.name,
+                            'slug': p.slug,
+                            'price': str(p.price),
+                            'compare_price': str(p.compare_price) if p.compare_price else None,
+                            'stock': p.stock,
+                            'image': p.image,
+                            'is_featured': p.is_featured,
+                            'discount_percentage': p.discount_percentage
+                        }
+                        for p in group_products
+                    ]
+                }]
+            
+            sub_categories['chicken'] = chicken_groups
+        
+        # For sweets category - group by type
+        elif 'sweet' in category_slug or 'sweet' in category_name:
+            sub_category_groups = defaultdict(list)
+            for product in products:
+                product_name_lower = product.name.lower()
+                # Categorize based on product name
+                if 'diwali' in product_name_lower or 'assorted' in product_name_lower:
+                    group_key = 'diwali_sweets'
+                elif 'barfi' in product_name_lower or 'burfi' in product_name_lower:
+                    group_key = 'barfi'
+                elif 'laddo' in product_name_lower or 'ladoo' in product_name_lower:
+                    group_key = 'laddoo'
+                elif 'halwa' in product_name_lower or 'halva' in product_name_lower:
+                    group_key = 'halwa'
+                elif 'peda' in product_name_lower or 'pera' in product_name_lower:
+                    group_key = 'peda'
+                elif 'gulab jamun' in product_name_lower:
+                    group_key = 'gulab_jamun'
+                elif 'rasgulla' in product_name_lower or 'rasmalai' in product_name_lower:
+                    group_key = 'rasgulla_rasmalai'
+                elif any(word in product_name_lower for word in ['dry fruit', 'dryfruit', 'kaju', 'badam', 'pista']):
+                    group_key = 'dry_fruit_sweets'
+                elif 'kaju katli' in product_name_lower or 'kaju barfi' in product_name_lower:
+                    group_key = 'kaju_katli'
+                elif 'jalebi' in product_name_lower or 'imarti' in product_name_lower:
+                    group_key = 'jalebi_imarti'
+                else:
+                    group_key = 'diwali_sweets'  # default
+                
+                sub_category_groups[group_key].append(product)
+            
+            # Create sweets sub_categories structure
+            sweets_groups = {}
+            for group_key, group_products in sub_category_groups.items():
+                sweets_groups[group_key] = [{
+                    'id': category.id,
+                    'name': category.name,
+                    'slug': category.slug,
+                    'description': category.description,
+                    'image': category.image,
+                    'is_active': category.is_active,
+                    'items': [
+                        {
+                            'id': p.id,
+                            'name': p.name,
+                            'slug': p.slug,
+                            'price': str(p.price),
+                            'compare_price': str(p.compare_price) if p.compare_price else None,
+                            'stock': p.stock,
+                            'image': p.image,
+                            'is_featured': p.is_featured,
+                            'discount_percentage': p.discount_percentage
+                        }
+                        for p in group_products
+                    ]
+                }]
+            
+            sub_categories['sweets'] = sweets_groups
+        
+        # Add category to response
+        if sub_categories:
+            categories_data.append({
+                'id': category.id,
+                'name': category.name,
+                'slug': category.slug,
+                'description': category.description,
+                'image': category.image,
+                'is_active': category.is_active,
+                'sub_categories': sub_categories
+            })
+            total_items += products.count()
     
-    if is_featured is not None:
-        products = products.filter(is_featured=is_featured)
-    
-    if search:
-        products = products.filter(name__icontains=search)
-    
-    return products
+    return {
+        'status': 'success',
+        'message': 'Products retrieved successfully',
+        'data': {
+            'total_items': total_items,
+            'categories': categories_data
+        }
+    }
 
 
 @router.get("/products/featured/mixed", response=List[ProductListSchema])

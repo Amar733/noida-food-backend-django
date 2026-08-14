@@ -1,0 +1,1703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Management Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f5f5f5;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 20px;
+            background: #f5f5f5;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .tab-button:hover {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .tab-button.active {
+            background: white;
+            color: #667eea;
+        }
+
+        .tab-button.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #667eea;
+        }
+
+        .sub-tabs {
+            display: flex;
+            background: #fafafa;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 10px 20px;
+            gap: 10px;
+        }
+
+        .sub-tab-button {
+            padding: 10px 20px;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: 500;
+            color: #666;
+            transition: all 0.3s ease;
+        }
+
+        .sub-tab-button:hover {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .sub-tab-button.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .sub-tab-content {
+            display: none;
+        }
+
+        .sub-tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 30px;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .config-section {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 4px solid #667eea;
+        }
+
+        .config-section h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 600;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .operations {
+            display: grid;
+            gap: 20px;
+        }
+
+        .operation-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .operation-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .operation-card h3 {
+            color: #333;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .method-badge {
+            padding: 5px 12px;
+            border-radius: 5px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .method-get { background: #4caf50; color: white; }
+        .method-post { background: #2196f3; color: white; }
+        .method-put { background: #ff9800; color: white; }
+        .method-delete { background: #f44336; color: white; }
+
+        .form-group {
+            margin-top: 15px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 0.95em;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea.form-input {
+            min-height: 100px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-success {
+            background: #4caf50;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        .btn-warning {
+            background: #ff9800;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #e68900;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 152, 0, 0.4);
+        }
+
+        .btn-danger {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #da190b;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(244, 67, 54, 0.4);
+        }
+
+        .response-box {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 5px;
+            border-left: 4px solid #667eea;
+            display: none;
+        }
+
+        .response-box.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .response-box pre {
+            background: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin-top: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .response-box h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .response-box.error {
+            border-left-color: #f44336;
+        }
+
+        .response-box.error h4 {
+            color: #f44336;
+        }
+
+        .items-display {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .item-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .item-card:hover {
+            border-color: #667eea;
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .item-card h4 {
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .item-card .price {
+            color: #4caf50;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .item-card .image {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 8px;
+        }
+
+        .item-card .id {
+            color: #999;
+            font-size: 0.85em;
+            margin-top: 8px;
+            font-weight: 500;
+        }
+
+        .item-card .description {
+            color: #555;
+            font-size: 0.9em;
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        .view-mode-tabs {
+            display: flex !important;
+            gap: 10px;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .view-mode-btn {
+            padding: 10px 20px;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: 500;
+            color: #666;
+            transition: all 0.3s ease;
+        }
+
+        .view-mode-btn:hover {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .view-mode-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .view-content {
+            display: block !important;
+        }
+
+        .view-content:not(.active) {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍽️ Product Management Dashboard</h1>
+            <p>Manage Chicken, Dry Fruits & Sweets Products</p>
+        </div>
+
+        <!-- Configuration Section -->
+        <div style="padding: 30px; background: #fafafa; border-bottom: 1px solid #ddd;">
+            <div class="config-section">
+                <h3>⚙️ API Configuration</h3>
+                <div class="input-group">
+                    <label>Base URL:</label>
+                    <input type="text" id="baseUrl" value="http://localhost:8000" placeholder="http://localhost:8000">
+                </div>
+                <div class="input-group">
+                    <label>Auth Token (for POST/PUT/DELETE operations):</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="authToken" placeholder="Enter your authentication token" style="flex: 1;">
+                        <button class="btn btn-danger" onclick="clearToken()" style="padding: 10px 15px; margin: 0;">🚪 Logout</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="config-section" style="margin-top: 20px; border-left-color: #4caf50;">
+                <h3>🔐 Admin Login (Required for Create/Update/Delete)</h3>
+                <p style="color: #666; margin-bottom: 15px; font-size: 0.95em;">
+                    <strong>Note:</strong> Only admin users can create, update, or delete products. Regular users can only view products.
+                </p>
+                <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; align-items: end;">
+                    <div class="input-group" style="margin-bottom: 0;">
+                        <label>Admin Username:</label>
+                        <input type="text" id="adminUsername" placeholder="e.g., amar">
+                    </div>
+                    <div class="input-group" style="margin-bottom: 0;">
+                        <label>Admin Password:</label>
+                        <input type="password" id="adminPassword" placeholder="Enter password">
+                    </div>
+                    <button class="btn btn-success" onclick="adminLogin()" style="margin: 0;">🔑 Login & Get Token</button>
+                </div>
+                <div id="admin-login-response" class="response-box" style="margin-top: 15px;"></div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-button active" onclick="openTab(event, 'chicken')">🍗 Chicken</button>
+            <button class="tab-button" onclick="openTab(event, 'dryfruits')">🥜 Dry Fruits</button>
+            <button class="tab-button" onclick="openTab(event, 'sweets')">🍬 Sweets</button>
+        </div>
+
+        <!-- Chicken Tab -->
+        <div id="chicken" class="tab-content active">
+            <!-- Sub-tabs for CRUD operations -->
+            <div class="sub-tabs">
+                <button class="sub-tab-button active" onclick="openSubTab(event, 'chicken-view')">📥 View All</button>
+                <button class="sub-tab-button" onclick="openSubTab(event, 'chicken-create')">➕ Create Single</button>
+                <button class="sub-tab-button" onclick="openSubTab(event, 'chicken-bulk')">📦 Create Bulk</button>
+                <button class="sub-tab-button" onclick="openSubTab(event, 'chicken-update')">✏️ Update</button>
+                <button class="sub-tab-button" onclick="openSubTab(event, 'chicken-delete')">🗑️ Delete</button>
+            </div>
+
+            <!-- View All Sub-tab -->
+            <div id="chicken-view" class="sub-tab-content active">
+                <div class="operations">
+                    <div class="operation-card">
+                        <h3>
+                            <span class="method-badge method-get">GET</span>
+                            Get All Chicken Items
+                        </h3>
+                        <p style="color: #666; margin: 10px 0;">
+                            Endpoint: <code>/products/chicken/data</code><br>
+                            <span style="color: #4caf50; font-weight: 600;">✓ Public Access - No authentication required</span>
+                        </p>
+                        <button class="btn btn-success" onclick="getAllChicken()">📥 Get All Items</button>
+                        
+                        <!-- View Mode Sub-tabs -->
+                        <div class="view-mode-tabs" style="margin-top: 20px; margin-bottom: 20px; display: flex; gap: 10px; border-bottom: 2px solid #e0e0e0; padding-bottom: 10px;">
+                            <button class="view-mode-btn active" onclick="switchViewMode(event, 'chicken-card-view', this)">🎴 Card View</button>
+                            <button class="view-mode-btn" onclick="switchViewMode(event, 'chicken-json-view', this)">📋 JSON View</button>
+                        </div>
+                        
+                        <!-- Card View -->
+                        <div id="chicken-card-view" class="view-content active" style="margin-top: 20px;">
+                            <div id="chicken-items-display" class="items-display"></div>
+                        </div>
+
+                        <!-- JSON View -->
+                        <div id="chicken-json-view" class="view-content" style="margin-top: 20px; display: none;">
+                            <div id="chicken-get-response" class="response-box"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Create Single Sub-tab -->
+            <div id="chicken-create" class="sub-tab-content">
+                <div class="operations">
+                    <div class="operation-card">
+                        <h3>
+                            <span class="method-badge method-post">POST</span>
+                            Create Single Chicken Item
+                        </h3>
+                        <p style="color: #666; margin: 10px 0;">
+                            Endpoint: <code>/products/chicken/items</code><br>
+                            <span style="color: #f44336; font-weight: 600;">🔒 Admin Only - Authentication required</span>
+                        </p>
+                        <div class="form-group">
+                            <div class="form-row">
+                                <input type="text" id="chicken-single-name" class="form-input" placeholder="Item Name (e.g., Chicken Tikka)" required>
+                                <input type="number" id="chicken-single-price" class="form-input" placeholder="Price (e.g., 199)" required>
+                                <input type="text" id="chicken-single-image" class="form-input" placeholder="Image URL (e.g., https://...)" required>
+                            </div>
+                            <div class="form-row">
+                                <textarea id="chicken-single-description" class="form-input" placeholder="Description (optional)" style="grid-column: 1 / -1;"></textarea>
+                            </div>
+                            <p style="color: #999; font-size: 0.85em; margin-top: 10px;">
+                                💡 Tip: ID will be auto-generated. You don't need to provide it.
+                            </p>
+                            <button class="btn btn-primary" onclick="createSingleChicken()">➕ Create Item</button>
+                        </div>
+                        <div id="chicken-post-single-response" class="response-box"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Create Bulk Sub-tab -->
+            <div id="chicken-bulk" class="sub-tab-content">
+                <div class="operations">
+                    <div class="operation-card">
+                        <h3>
+                            <span class="method-badge method-post">POST</span>
+                            Create Multiple Chicken Items (Bulk)
+                        </h3>
+                        <p style="color: #666; margin: 10px 0;">
+                            Endpoint: <code>/products/chicken/data</code><br>
+                            <span style="color: #f44336; font-weight: 600;">🔒 Admin Only - Authentication required</span>
+                        </p>
+                        <div class="form-group">
+                            <textarea id="chicken-bulk-data" class="form-input" placeholder='Enter JSON data:
+{
+  "category": "Chicken",
+  "items": [
+    {"name": "Chicken Tikka", "price": 199, "image": "chicken-tikka.jpg", "description": "Delicious grilled chicken with spices"},
+    {"name": "Butter Chicken", "price": 299, "image": "butter-chicken.jpg", "description": "Creamy butter chicken curry"}
+  ]
+}'></textarea>
+                            <button class="btn btn-primary" onclick="createBulkChicken()">➕ Create Bulk Items</button>
+                        </div>
+                        <div id="chicken-post-bulk-response" class="response-box"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Update Sub-tab -->
+            <div id="chicken-update" class="sub-tab-content">
+                <div class="operations">
+                    <div class="operation-card">
+                        <h3>
+                            <span class="method-badge method-put">PUT</span>
+                            Update Chicken Item
+                        </h3>
+                        <p style="color: #666; margin: 10px 0;">
+                            Endpoint: <code>/products/chicken/items/{item_name}</code><br>
+                            <span style="color: #f44336; font-weight: 600;">🔒 Admin Only - Authentication required</span>
+                        </p>
+                        <div class="form-group">
+                            <div class="form-row">
+                                <input type="number" id="chicken-update-id" class="form-input" placeholder="Item ID (e.g., 1)" style="grid-column: 1 / -1;" required>
+                            </div>
+                            <div class="form-row">
+                                <input type="text" id="chicken-update-name" class="form-input" placeholder="New Name (optional)">
+                                <input type="number" id="chicken-update-price" class="form-input" placeholder="New Price (optional)">
+                                <input type="text" id="chicken-update-image" class="form-input" placeholder="New Image (optional)">
+                            </div>
+                            <div class="form-row">
+                                <textarea id="chicken-update-description" class="form-input" placeholder="New Description (optional)" style="grid-column: 1 / -1;"></textarea>
+                            </div>
+                            <button class="btn btn-warning" onclick="updateChicken()">✏️ Update Item</button>
+                        </div>
+                        <div id="chicken-put-response" class="response-box"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Delete Sub-tab -->
+            <div id="chicken-delete" class="sub-tab-content">
+                <div class="operations">
+                    <div class="operation-card">
+                        <h3>
+                            <span class="method-badge method-delete">DELETE</span>
+                            Delete Chicken Item
+                        </h3>
+                        <p style="color: #666; margin: 10px 0;">
+                            Endpoint: <code>/products/chicken/items/{item_name}</code><br>
+                            <span style="color: #f44336; font-weight: 600;">🔒 Admin Only - Authentication required</span>
+                        </p>
+                        <div class="form-group">
+                            <input type="number" id="chicken-delete-id" class="form-input" placeholder="Item ID to Delete (e.g., 1)">
+                            <button class="btn btn-danger" onclick="deleteChicken()">🗑️ Delete Item</button>
+                        </div>
+                        <div id="chicken-delete-response" class="response-box"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dry Fruits Tab -->
+        <div id="dryfruits" class="tab-content">
+            <!-- Sub-tabs for CRUD operations -->
+            <div class="sub-tabs">
+                <button class="sub-tab-button active" onclick="openSubTab(event, 'dryfruits-view')">📥 View All</button>
+                <button class="sub-tab-button" onclick="openSubTab(event, 'dryfruits-create')">➕ Create Single</button>
+                <button class="sub-tab-button" onclick="openSubTab(event, 'dryfruits-bulk')">📦 Create Bulk</button>
+                <button class="sub-tab-button" onclick="openSubTab(event, 'dryfruits-update')">✏️ Update</button>
+                <button class="sub-tab-button" onclick="openSubTab(event, 'dryfruits-delete')">🗑️ Delete</button>
+            </div>
+
+            <!-- View All Sub-tab -->
+            <div id="dryfruits-view" class="sub-tab-content active">
+                <div class="operations">
+                    <div class="operation-card">
+                        <h3>
+                            <span class="method-badge method-get">GET</span>
+                            Get All Dry Fruits Items
+                        </h3>
+                        <p style="color: #666; margin: 10px 0;">
+                            Endpoint: <code>/products/dry-fruits/data</code><br>
+                            <span style="color: #4caf50; font-weight: 600;">✓ Public Access - No authentication required</span>
+                        </p>
+                        <button class="btn btn-success" onclick="getAllDryFruits()">📥 Get All Items</button>
+                        
+                        <!-- View Mode Sub-tabs -->
+                        <div class="view-mode-tabs" style="margin-top: 20px; margin-bottom: 20px; display: flex; gap: 10px; border-bottom: 2px solid #e0e0e0; padding-bottom: 10px;">
+                            <button class="view-mode-btn active" onclick="switchViewModeDryFruits(event, 'dryfruits-card-view', this)">🎴 Card View</button>
+                            <button class="view-mode-btn" onclick="switchViewModeDryFruits(event, 'dryfruits-json-view', this)">📋 JSON View</button>
+                        </div>
+                        
+                        <!-- Card View -->
+                        <div id="dryfruits-card-view" class="view-content active" style="margin-top: 20px;">
+                            <div id="dryfruits-items-display" class="items-display"></div>
+                        </div>
+
+                        <!-- JSON View -->
+                        <div id="dryfruits-json-view" class="view-content" style="margin-top: 20px; display: none;">
+                            <div id="dryfruits-get-response" class="response-box"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Create Single Sub-tab -->
+            <div id="dryfruits-create" class="sub-tab-content">
+                <div class="operations">
+                    <div class="operation-card">
+                        <h3>
+                            <span class="method-badge method-post">POST</span>
+                            Create Single Dry Fruit Item
+                        </h3>
+                        <p style="color: #666; margin: 10px 0;">
+                            Endpoint: <code>/products/dry-fruits/items</code><br>
+                            <span style="color: #f44336; font-weight: 600;">🔒 Admin Only - Authentication required</span>
+                        </p>
+                        <div class="form-group">
+                            <div class="form-row">
+                                <input type="text" id="dryfruits-single-name" class="form-input" placeholder="Item Name (e.g., Almonds)" required>
+                                <input type="number" id="dryfruits-single-price" class="form-input" placeholder="Price (e.g., 499)" required>
+                                <input type="text" id="dryfruits-single-image" class="form-input" placeholder="Image URL (e.g., https://...)" required>
+                            </div>
+                            <div class="form-row">
+                                <textarea id="dryfruits-single-description" class="form-input" placeholder="Description (optional)" style="grid-column: 1 / -1;"></textarea>
+                            </div>
+                            <p style="color: #999; font-size: 0.85em; margin-top: 10px;">
+                                💡 Tip: ID will be auto-generated. You don't need to provide it.
+                            </p>
+                            <button class="btn btn-primary" onclick="createSingleDryFruit()">➕ Create Item</button>
+                        </div>
+                        <div id="dryfruits-post-single-response" class="response-box"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Create Bulk Sub-tab -->
+            <div id="dryfruits-bulk" class="sub-tab-content">
+                <div class="operations">
+                    <div class="operation-card">
+                        <h3>
+                            <span class="method-badge method-post">POST</span>
+                            Create Multiple Dry Fruits Items (Bulk)
+                        </h3>
+                        <p style="color: #666; margin: 10px 0;">
+                            Endpoint: <code>/products/dry-fruits/data</code><br>
+                            <span style="color: #f44336; font-weight: 600;">🔒 Admin Only - Authentication required</span>
+                        </p>
+                        <div class="form-group">
+                            <textarea id="dryfruits-bulk-data" class="form-input" placeholder='Enter JSON data:
+{
+  "category": "Dry Fruits",
+  "items": [
+    {"name": "Almonds", "price": 499, "image": "almonds.jpg", "description": "Premium quality almonds"},
+    {"name": "Cashews", "price": 599, "image": "cashews.jpg", "description": "Roasted cashews"}
+  ]
+}'></textarea>
+                            <button class="btn btn-primary" onclick="createBulkDryFruit()">➕ Create Bulk Items</button>
+                        </div>
+                        <div id="dryfruits-post-bulk-response" class="response-box"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Update Sub-tab -->
+            <div id="dryfruits-update" class="sub-tab-content">
+                <div class="operations">
+                    <div class="operation-card">
+                        <h3>
+                            <span class="method-badge method-put">PUT</span>
+                            Update Dry Fruit Item
+                        </h3>
+                        <p style="color: #666; margin: 10px 0;">
+                            Endpoint: <code>/products/dry-fruits/items/{item_id}</code><br>
+                            <span style="color: #f44336; font-weight: 600;">🔒 Admin Only - Authentication required</span>
+                        </p>
+                        <div class="form-group">
+                            <div class="form-row">
+                                <input type="number" id="dryfruits-update-id" class="form-input" placeholder="Item ID (e.g., 1)" style="grid-column: 1 / -1;" required>
+                            </div>
+                            <div class="form-row">
+                                <input type="text" id="dryfruits-update-name" class="form-input" placeholder="New Name (optional)">
+                                <input type="number" id="dryfruits-update-price" class="form-input" placeholder="New Price (optional)">
+                                <input type="text" id="dryfruits-update-image" class="form-input" placeholder="New Image (optional)">
+                            </div>
+                            <div class="form-row">
+                                <textarea id="dryfruits-update-description" class="form-input" placeholder="New Description (optional)" style="grid-column: 1 / -1;"></textarea>
+                            </div>
+                            <button class="btn btn-warning" onclick="updateDryFruit()">✏️ Update Item</button>
+                        </div>
+                        <div id="dryfruits-put-response" class="response-box"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Delete Sub-tab -->
+            <div id="dryfruits-delete" class="sub-tab-content">
+                <div class="operations">
+                    <div class="operation-card">
+                        <h3>
+                            <span class="method-badge method-delete">DELETE</span>
+                            Delete Dry Fruit Item
+                        </h3>
+                        <p style="color: #666; margin: 10px 0;">
+                            Endpoint: <code>/products/dry-fruits/items/{item_id}</code><br>
+                            <span style="color: #f44336; font-weight: 600;">🔒 Admin Only - Authentication required</span>
+                        </p>
+                        <div class="form-group">
+                            <input type="number" id="dryfruits-delete-id" class="form-input" placeholder="Item ID to Delete (e.g., 1)">
+                            <button class="btn btn-danger" onclick="deleteDryFruit()">🗑️ Delete Item</button>
+                        </div>
+                        <div id="dryfruits-delete-response" class="response-box"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sweets Tab -->
+        <div id="sweets" class="tab-content">
+            <!-- Sub-tabs for CRUD operations -->
+            <div class="sub-tabs">
+                <button class="sub-tab-button active" onclick="openSubTab(event, 'sweets-view')">📥 View All</button>
+                <button class="sub-tab-button" onclick="openSubTab(event, 'sweets-create')">➕ Create Single</button>
+                <button class="sub-tab-button" onclick="openSubTab(event, 'sweets-bulk')">📦 Create Bulk</button>
+                <button class="sub-tab-button" onclick="openSubTab(event, 'sweets-update')">✏️ Update</button>
+                <button class="sub-tab-button" onclick="openSubTab(event, 'sweets-delete')">🗑️ Delete</button>
+            </div>
+
+            <!-- View All Sub-tab -->
+            <div id="sweets-view" class="sub-tab-content active">
+                <div class="operations">
+                    <div class="operation-card">
+                        <h3>
+                            <span class="method-badge method-get">GET</span>
+                            Get All Sweets Items
+                        </h3>
+                        <p style="color: #666; margin: 10px 0;">
+                            Endpoint: <code>/products/sweets/data</code><br>
+                            <span style="color: #4caf50; font-weight: 600;">✓ Public Access - No authentication required</span>
+                        </p>
+                        <button class="btn btn-success" onclick="getAllSweets()">📥 Get All Items</button>
+                        
+                        <!-- View Mode Sub-tabs -->
+                        <div class="view-mode-tabs" style="margin-top: 20px; margin-bottom: 20px; display: flex; gap: 10px; border-bottom: 2px solid #e0e0e0; padding-bottom: 10px;">
+                            <button class="view-mode-btn active" onclick="switchViewModeSweets(event, 'sweets-card-view', this)">🎴 Card View</button>
+                            <button class="view-mode-btn" onclick="switchViewModeSweets(event, 'sweets-json-view', this)">📋 JSON View</button>
+                        </div>
+                        
+                        <!-- Card View -->
+                        <div id="sweets-card-view" class="view-content active" style="margin-top: 20px;">
+                            <div id="sweets-items-display" class="items-display"></div>
+                        </div>
+
+                        <!-- JSON View -->
+                        <div id="sweets-json-view" class="view-content" style="margin-top: 20px; display: none;">
+                            <div id="sweets-get-response" class="response-box"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Create Single Sub-tab -->
+            <div id="sweets-create" class="sub-tab-content">
+                <div class="operations">
+                    <div class="operation-card">
+                        <h3>
+                            <span class="method-badge method-post">POST</span>
+                            Create Single Sweet Item
+                        </h3>
+                        <p style="color: #666; margin: 10px 0;">
+                            Endpoint: <code>/products/sweets/items</code><br>
+                            <span style="color: #f44336; font-weight: 600;">🔒 Admin Only - Authentication required</span>
+                        </p>
+                        <div class="form-group">
+                            <div class="form-row">
+                                <input type="text" id="sweets-single-name" class="form-input" placeholder="Item Name (e.g., Rasgulla)" required>
+                                <input type="number" id="sweets-single-price" class="form-input" placeholder="Price (e.g., 149)" required>
+                                <input type="text" id="sweets-single-image" class="form-input" placeholder="Image URL (e.g., https://...)" required>
+                            </div>
+                            <div class="form-row">
+                                <textarea id="sweets-single-description" class="form-input" placeholder="Description (optional)" style="grid-column: 1 / -1;"></textarea>
+                            </div>
+                            <p style="color: #999; font-size: 0.85em; margin-top: 10px;">
+                                💡 Tip: ID will be auto-generated. You don't need to provide it.
+                            </p>
+                            <button class="btn btn-primary" onclick="createSingleSweet()">➕ Create Item</button>
+                        </div>
+                        <div id="sweets-post-single-response" class="response-box"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Create Bulk Sub-tab -->
+            <div id="sweets-bulk" class="sub-tab-content">
+                <div class="operations">
+                    <div class="operation-card">
+                        <h3>
+                            <span class="method-badge method-post">POST</span>
+                            Create Multiple Sweets Items (Bulk)
+                        </h3>
+                        <p style="color: #666; margin: 10px 0;">
+                            Endpoint: <code>/products/sweets/data</code><br>
+                            <span style="color: #f44336; font-weight: 600;">🔒 Admin Only - Authentication required</span>
+                        </p>
+                        <div class="form-group">
+                            <textarea id="sweets-bulk-data" class="form-input" placeholder='Enter JSON data:
+{
+  "category": "Sweets",
+  "items": [
+    {"name": "Rasgulla", "price": 149, "image": "rasgulla.jpg", "description": "Soft, spongy Bengali sweet"},
+    {"name": "Gulab Jamun", "price": 99, "image": "gulab-jamun.jpg", "description": "Sweet milk solid dumplings"}
+  ]
+}'></textarea>
+                            <button class="btn btn-primary" onclick="createBulkSweet()">➕ Create Bulk Items</button>
+                        </div>
+                        <div id="sweets-post-bulk-response" class="response-box"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Update Sub-tab -->
+            <div id="sweets-update" class="sub-tab-content">
+                <div class="operations">
+                    <div class="operation-card">
+                        <h3>
+                            <span class="method-badge method-put">PUT</span>
+                            Update Sweet Item
+                        </h3>
+                        <p style="color: #666; margin: 10px 0;">
+                            Endpoint: <code>/products/sweets/items/{item_id}</code><br>
+                            <span style="color: #f44336; font-weight: 600;">🔒 Admin Only - Authentication required</span>
+                        </p>
+                        <div class="form-group">
+                            <div class="form-row">
+                                <input type="number" id="sweets-update-id" class="form-input" placeholder="Item ID (e.g., 1)" style="grid-column: 1 / -1;" required>
+                            </div>
+                            <div class="form-row">
+                                <input type="text" id="sweets-update-name" class="form-input" placeholder="New Name (optional)">
+                                <input type="number" id="sweets-update-price" class="form-input" placeholder="New Price (optional)">
+                                <input type="text" id="sweets-update-image" class="form-input" placeholder="New Image (optional)">
+                            </div>
+                            <div class="form-row">
+                                <textarea id="sweets-update-description" class="form-input" placeholder="New Description (optional)" style="grid-column: 1 / -1;"></textarea>
+                            </div>
+                            <button class="btn btn-warning" onclick="updateSweet()">✏️ Update Item</button>
+                        </div>
+                        <div id="sweets-put-response" class="response-box"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Delete Sub-tab -->
+            <div id="sweets-delete" class="sub-tab-content">
+                <div class="operations">
+                    <div class="operation-card">
+                        <h3>
+                            <span class="method-badge method-delete">DELETE</span>
+                            Delete Sweet Item
+                        </h3>
+                        <p style="color: #666; margin: 10px 0;">
+                            Endpoint: <code>/products/sweets/items/{item_id}</code><br>
+                            <span style="color: #f44336; font-weight: 600;">🔒 Admin Only - Authentication required</span>
+                        </p>
+                        <div class="form-group">
+                            <input type="number" id="sweets-delete-id" class="form-input" placeholder="Item ID to Delete (e.g., 1)">
+                            <button class="btn btn-danger" onclick="deleteSweet()">🗑️ Delete Item</button>
+                        </div>
+                        <div id="sweets-delete-response" class="response-box"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching function
+        function openTab(evt, tabName) {
+            const tabContents = document.getElementsByClassName("tab-content");
+            for (let i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove("active");
+            }
+
+            const tabButtons = document.getElementsByClassName("tab-button");
+            for (let i = 0; i < tabButtons.length; i++) {
+                tabButtons[i].classList.remove("active");
+            }
+
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+
+        // Sub-tab switching function
+        function openSubTab(evt, subTabName) {
+            // Get all sub-tab contents within the parent tab content
+            const parentTab = evt.currentTarget.closest('.tab-content');
+            const subTabContents = parentTab.getElementsByClassName("sub-tab-content");
+            for (let i = 0; i < subTabContents.length; i++) {
+                subTabContents[i].classList.remove("active");
+            }
+
+            const subTabButtons = parentTab.getElementsByClassName("sub-tab-button");
+            for (let i = 0; i < subTabButtons.length; i++) {
+                subTabButtons[i].classList.remove("active");
+            }
+
+            document.getElementById(subTabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+
+        // View mode switching function for Card/JSON views
+        function switchViewMode(evt, viewModeName, buttonElement) {
+            // Get all view content divs
+            const cardView = document.getElementById('chicken-card-view');
+            const jsonView = document.getElementById('chicken-json-view');
+            
+            // Hide all views
+            cardView.classList.remove('active');
+            jsonView.classList.remove('active');
+            cardView.style.display = 'none';
+            jsonView.style.display = 'none';
+            
+            // Remove active class from all buttons
+            const allButtons = document.querySelectorAll('.view-mode-btn');
+            allButtons.forEach(btn => btn.classList.remove('active'));
+            
+            // Show selected view
+            const selectedView = document.getElementById(viewModeName);
+            if (selectedView) {
+                selectedView.classList.add('active');
+                selectedView.style.display = 'block';
+            }
+            
+            // Add active class to clicked button
+            if (buttonElement) {
+                buttonElement.classList.add('active');
+            }
+        }
+
+        // Helper function to get base URL and auth token
+        function getConfig() {
+            return {
+                baseUrl: document.getElementById('baseUrl').value || "http://localhost:8000",
+                authToken: document.getElementById('authToken').value
+            };
+        }
+
+        // Load token from localStorage when page loads
+        window.addEventListener('DOMContentLoaded', function() {
+            const savedToken = localStorage.getItem('adminToken');
+            if (savedToken) {
+                document.getElementById('authToken').value = savedToken;
+            }
+            const savedBaseUrl = localStorage.getItem('baseUrl');
+            if (savedBaseUrl) {
+                document.getElementById('baseUrl').value = savedBaseUrl;
+            }
+        });
+
+        // Save token to localStorage when updated
+        function saveToken(token) {
+            localStorage.setItem('adminToken', token);
+        }
+
+        // Save base URL to localStorage
+        function saveBaseUrl(baseUrl) {
+            localStorage.setItem('baseUrl', baseUrl);
+        }
+
+        // Clear token from localStorage
+        function clearToken() {
+            localStorage.removeItem('adminToken');
+            document.getElementById('authToken').value = '';
+            alert('Token cleared. You need to login again.');
+        }
+
+        // Helper function to display response
+        function displayResponse(elementId, data, isError = false) {
+            const responseBox = document.getElementById(elementId);
+            responseBox.classList.remove('error');
+            if (isError) {
+                responseBox.classList.add('error');
+            }
+            responseBox.innerHTML = `
+                <h4>${isError ? '❌ Error' : '✅ Success'}</h4>
+                <pre>${JSON.stringify(data, null, 2)}</pre>
+            `;
+            responseBox.classList.add('show');
+        }
+
+        // CHICKEN API FUNCTIONS
+
+        async function adminLogin() {
+            const config = getConfig();
+            const username = document.getElementById('adminUsername').value;
+            const password = document.getElementById('adminPassword').value;
+
+            if (!username || !password) {
+                alert('Please enter both username and password');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${config.baseUrl}/api/users/admin-login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+                const data = await response.json();
+                
+                if (response.ok && data.access) {
+                    // Automatically fill the auth token field
+                    document.getElementById('authToken').value = data.access;
+                    // Save token to localStorage
+                    saveToken(data.access);
+                    // Save base URL to localStorage
+                    saveBaseUrl(config.baseUrl);
+                    // Clear password field for security
+                    document.getElementById('adminPassword').value = '';
+                    document.getElementById('adminUsername').value = '';
+                    
+                    displayResponse('admin-login-response', { 
+                        success: true, 
+                        message: '✅ Login successful! Token has been saved and will persist after refresh.',
+                        access_token: data.access.substring(0, 50) + '...' 
+                    });
+                } else {
+                    displayResponse('admin-login-response', data, true);
+                }
+            } catch (error) {
+                displayResponse('admin-login-response', { error: error.message }, true);
+            }
+        }
+
+        async function getAllChicken() {
+            const config = getConfig();
+            try {
+                const response = await fetch(`${config.baseUrl}/api/products/chicken/data`);
+                const data = await response.json();
+                displayResponse('chicken-get-response', data);
+                
+                // Display items in card format
+                displayChickenItems(data.items);
+            } catch (error) {
+                displayResponse('chicken-get-response', { error: error.message }, true);
+            }
+        }
+
+        function displayChickenItems(items) {
+            const container = document.getElementById('chicken-items-display');
+            if (!items || items.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #999; padding: 20px;">No items found</p>';
+                return;
+            }
+
+            container.innerHTML = items.map(item => `
+                <div class="item-card">
+                    <div class="id">🆔 ID: ${item.id}</div>
+                    <h4>${item.name}</h4>
+                    <div class="price">₹${item.price}</div>
+                    <div class="image">
+                        <strong>Image:</strong><br>
+                        <img src="${item.image}" alt="${item.name}" style="width: 100%; height: 150px; object-fit: cover; border-radius: 5px; margin-top: 8px;">
+                    </div>
+                    ${item.description ? `<div class="description"><strong>Description:</strong> ${item.description}</div>` : ''}
+                    <div style="margin-top: 12px; display: flex; gap: 5px;">
+                        <button class="btn btn-warning" onclick="prepareUpdateChicken('${item.name}', ${item.id})" style="padding: 5px 10px; font-size: 0.85em; flex: 1;">Edit</button>
+                        <button class="btn btn-danger" onclick="prepareDeleteChicken('${item.name}', ${item.id})" style="padding: 5px 10px; font-size: 0.85em; flex: 1;">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function prepareUpdateChicken(name, id) {
+            document.getElementById('chicken-update-id').value = id;
+            document.getElementById('chicken-update-name').value = name;
+            // Switch to update tab
+            const updateBtn = Array.from(document.querySelectorAll('.sub-tab-button')).find(btn => btn.textContent.includes('Update'));
+            if (updateBtn) updateBtn.click();
+            alert(`Editing item ID: ${id} (${name})`);
+        }
+
+        function prepareDeleteChicken(name, id) {
+            document.getElementById('chicken-delete-id').value = id;
+            // Switch to delete tab
+            const deleteBtn = Array.from(document.querySelectorAll('.sub-tab-button')).find(btn => btn.textContent.includes('Delete'));
+            if (deleteBtn) deleteBtn.click();
+            alert(`Delete item ID: ${id} (${name})`);
+        }
+
+        async function createSingleChicken() {
+            const config = getConfig();
+            const name = document.getElementById('chicken-single-name').value;
+            const price = parseFloat(document.getElementById('chicken-single-price').value);
+            const image = document.getElementById('chicken-single-image').value;
+            const description = document.getElementById('chicken-single-description').value || '';
+
+            if (!name || !price || !image) {
+                alert('Please fill all required fields (name, price, image)');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${config.baseUrl}/api/products/chicken/items`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${config.authToken}`
+                    },
+                    body: JSON.stringify({ name, price, image, description })
+                });
+                const data = await response.json();
+                displayResponse('chicken-post-single-response', data, !response.ok);
+            } catch (error) {
+                displayResponse('chicken-post-single-response', { error: error.message }, true);
+            }
+        }
+
+        async function createBulkChicken() {
+            const config = getConfig();
+            const bulkData = document.getElementById('chicken-bulk-data').value;
+
+            if (!bulkData) {
+                alert('Please enter JSON data');
+                return;
+            }
+
+            try {
+                const jsonData = JSON.parse(bulkData);
+                const response = await fetch(`${config.baseUrl}/api/products/chicken/data`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${config.authToken}`
+                    },
+                    body: JSON.stringify(jsonData)
+                });
+                const data = await response.json();
+                displayResponse('chicken-post-bulk-response', data, !response.ok);
+            } catch (error) {
+                displayResponse('chicken-post-bulk-response', { error: error.message }, true);
+            }
+        }
+
+        async function updateChicken() {
+            const config = getConfig();
+            const itemId = document.getElementById('chicken-update-id').value;
+            const name = document.getElementById('chicken-update-name').value;
+            const price = document.getElementById('chicken-update-price').value;
+            const image = document.getElementById('chicken-update-image').value;
+            const description = document.getElementById('chicken-update-description').value;
+
+            if (!itemId) {
+                alert('Please enter the item ID');
+                return;
+            }
+
+            const updateData = {};
+            if (name) updateData.name = name;
+            if (price) updateData.price = parseFloat(price);
+            if (image) updateData.image = image;
+            if (description) updateData.description = description;
+
+            try {
+                const response = await fetch(`${config.baseUrl}/api/products/chicken/items/${itemId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${config.authToken}`
+                    },
+                    body: JSON.stringify(updateData)
+                });
+                const data = await response.json();
+                displayResponse('chicken-put-response', data, !response.ok);
+            } catch (error) {
+                displayResponse('chicken-put-response', { error: error.message }, true);
+            }
+        }
+
+        async function deleteChicken() {
+            const config = getConfig();
+            const itemId = document.getElementById('chicken-delete-id').value;
+
+            if (!itemId) {
+                alert('Please enter the item ID');
+                return;
+            }
+
+            if (!confirm(`Are you sure you want to delete item ID: ${itemId}?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${config.baseUrl}/api/products/chicken/items/${itemId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${config.authToken}`
+                    }
+                });
+                const data = await response.json();
+                displayResponse('chicken-delete-response', data, !response.ok);
+            } catch (error) {
+                displayResponse('chicken-delete-response', { error: error.message }, true);
+            }
+        }
+
+        // DRY FRUITS API FUNCTIONS
+
+        // View mode switching function for Dry Fruits Card/JSON views
+        function switchViewModeDryFruits(evt, viewModeName, buttonElement) {
+            // Get all view content divs
+            const cardView = document.getElementById('dryfruits-card-view');
+            const jsonView = document.getElementById('dryfruits-json-view');
+            
+            // Hide all views
+            cardView.classList.remove('active');
+            jsonView.classList.remove('active');
+            cardView.style.display = 'none';
+            jsonView.style.display = 'none';
+            
+            // Remove active class from all buttons
+            const allButtons = document.querySelectorAll('.view-mode-btn');
+            allButtons.forEach(btn => btn.classList.remove('active'));
+            
+            // Show selected view
+            const selectedView = document.getElementById(viewModeName);
+            if (selectedView) {
+                selectedView.classList.add('active');
+                selectedView.style.display = 'block';
+            }
+            
+            // Add active class to clicked button
+            if (buttonElement) {
+                buttonElement.classList.add('active');
+            }
+        }
+
+        async function getAllDryFruits() {
+            const config = getConfig();
+            try {
+                const response = await fetch(`${config.baseUrl}/api/products/dry-fruits/data`);
+                const data = await response.json();
+                displayResponse('dryfruits-get-response', data);
+                
+                // Display items in card format
+                displayDryFruitsItems(data.items);
+            } catch (error) {
+                displayResponse('dryfruits-get-response', { error: error.message }, true);
+            }
+        }
+
+        function displayDryFruitsItems(items) {
+            const container = document.getElementById('dryfruits-items-display');
+            if (!items || items.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #999; padding: 20px;">No items found</p>';
+                return;
+            }
+
+            container.innerHTML = items.map(item => `
+                <div class="item-card">
+                    <div class="id">🆔 ID: ${item.id}</div>
+                    <h4>${item.name}</h4>
+                    <div class="price">₹${item.price}</div>
+                    <div class="image">
+                        <strong>Image:</strong><br>
+                        <img src="${item.image}" alt="${item.name}" style="width: 100%; height: 150px; object-fit: cover; border-radius: 5px; margin-top: 8px;">
+                    </div>
+                    ${item.description ? `<div class="description"><strong>Description:</strong> ${item.description}</div>` : ''}
+                    <div style="margin-top: 12px; display: flex; gap: 5px;">
+                        <button class="btn btn-warning" onclick="prepareUpdateDryFruit('${item.name}', ${item.id})" style="padding: 5px 10px; font-size: 0.85em; flex: 1;">Edit</button>
+                        <button class="btn btn-danger" onclick="prepareDeleteDryFruit('${item.name}', ${item.id})" style="padding: 5px 10px; font-size: 0.85em; flex: 1;">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function prepareUpdateDryFruit(name, id) {
+            document.getElementById('dryfruits-update-id').value = id;
+            document.getElementById('dryfruits-update-name').value = name;
+            // Switch to update tab
+            const parentTab = document.getElementById('dryfruits');
+            const updateBtn = Array.from(parentTab.querySelectorAll('.sub-tab-button')).find(btn => btn.textContent.includes('Update'));
+            if (updateBtn) updateBtn.click();
+            alert(`Editing item ID: ${id} (${name})`);
+        }
+
+        function prepareDeleteDryFruit(name, id) {
+            document.getElementById('dryfruits-delete-id').value = id;
+            // Switch to delete tab
+            const parentTab = document.getElementById('dryfruits');
+            const deleteBtn = Array.from(parentTab.querySelectorAll('.sub-tab-button')).find(btn => btn.textContent.includes('Delete'));
+            if (deleteBtn) deleteBtn.click();
+            alert(`Delete item ID: ${id} (${name})`);
+        }
+
+        async function createSingleDryFruit() {
+            const config = getConfig();
+            const name = document.getElementById('dryfruits-single-name').value;
+            const price = parseFloat(document.getElementById('dryfruits-single-price').value);
+            const image = document.getElementById('dryfruits-single-image').value;
+            const description = document.getElementById('dryfruits-single-description').value || '';
+
+            if (!name || !price || !image) {
+                alert('Please fill all required fields (name, price, image)');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${config.baseUrl}/api/products/dry-fruits/items`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${config.authToken}`
+                    },
+                    body: JSON.stringify({ name, price, image, description })
+                });
+                const data = await response.json();
+                displayResponse('dryfruits-post-single-response', data, !response.ok);
+            } catch (error) {
+                displayResponse('dryfruits-post-single-response', { error: error.message }, true);
+            }
+        }
+
+        async function createBulkDryFruit() {
+            const config = getConfig();
+            const bulkData = document.getElementById('dryfruits-bulk-data').value;
+
+            if (!bulkData) {
+                alert('Please enter JSON data');
+                return;
+            }
+
+            try {
+                const jsonData = JSON.parse(bulkData);
+                const response = await fetch(`${config.baseUrl}/api/products/dry-fruits/data`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${config.authToken}`
+                    },
+                    body: JSON.stringify(jsonData)
+                });
+                const data = await response.json();
+                displayResponse('dryfruits-post-bulk-response', data, !response.ok);
+            } catch (error) {
+                displayResponse('dryfruits-post-bulk-response', { error: error.message }, true);
+            }
+        }
+
+        async function updateDryFruit() {
+            const config = getConfig();
+            const itemId = document.getElementById('dryfruits-update-id').value;
+            const name = document.getElementById('dryfruits-update-name').value;
+            const price = document.getElementById('dryfruits-update-price').value;
+            const image = document.getElementById('dryfruits-update-image').value;
+            const description = document.getElementById('dryfruits-update-description').value;
+
+            if (!itemId) {
+                alert('Please enter the item ID');
+                return;
+            }
+
+            const updateData = {};
+            if (name) updateData.name = name;
+            if (price) updateData.price = parseFloat(price);
+            if (image) updateData.image = image;
+            if (description) updateData.description = description;
+
+            try {
+                const response = await fetch(`${config.baseUrl}/api/products/dry-fruits/items/${itemId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${config.authToken}`
+                    },
+                    body: JSON.stringify(updateData)
+                });
+                const data = await response.json();
+                displayResponse('dryfruits-put-response', data, !response.ok);
+            } catch (error) {
+                displayResponse('dryfruits-put-response', { error: error.message }, true);
+            }
+        }
+
+        async function deleteDryFruit() {
+            const config = getConfig();
+            const itemId = document.getElementById('dryfruits-delete-id').value;
+
+            if (!itemId) {
+                alert('Please enter the item ID');
+                return;
+            }
+
+            if (!confirm(`Are you sure you want to delete item ID: ${itemId}?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${config.baseUrl}/api/products/dry-fruits/items/${itemId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${config.authToken}`
+                    }
+                });
+                const data = await response.json();
+                displayResponse('dryfruits-delete-response', data, !response.ok);
+            } catch (error) {
+                displayResponse('dryfruits-delete-response', { error: error.message }, true);
+            }
+        }
+
+        // ===== SWEETS API FUNCTIONS =====
+
+        function switchViewModeSweets(evt, viewModeName, buttonElement) {
+            // Get all view content divs
+            const cardView = document.getElementById('sweets-card-view');
+            const jsonView = document.getElementById('sweets-json-view');
+            
+            // Hide all views
+            cardView.classList.remove('active');
+            jsonView.classList.remove('active');
+            cardView.style.display = 'none';
+            jsonView.style.display = 'none';
+            
+            // Remove active class from all buttons
+            const allButtons = evt.currentTarget.parentElement.querySelectorAll('.view-mode-btn');
+            allButtons.forEach(btn => btn.classList.remove('active'));
+            
+            // Show selected view
+            const selectedView = document.getElementById(viewModeName);
+            if (selectedView) {
+                selectedView.classList.add('active');
+                selectedView.style.display = 'block';
+            }
+            
+            // Add active class to clicked button
+            if (buttonElement) {
+                buttonElement.classList.add('active');
+            }
+        }
+
+        async function getAllSweets() {
+            const config = getConfig();
+            try {
+                const response = await fetch(`${config.baseUrl}/api/products/sweets/data`);
+                const data = await response.json();
+                displayResponse('sweets-get-response', data);
+                
+                // Display items in card format
+                displaySweetsItems(data.items);
+            } catch (error) {
+                displayResponse('sweets-get-response', { error: error.message }, true);
+            }
+        }
+
+        function displaySweetsItems(items) {
+            const container = document.getElementById('sweets-items-display');
+            if (!items || items.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #999; padding: 20px;">No items found</p>';
+                return;
+            }
+
+            container.innerHTML = items.map(item => `
+                <div class="item-card">
+                    <div class="id">🆔 ID: ${item.id}</div>
+                    <h4>${item.name}</h4>
+                    <div class="price">₹${item.price}</div>
+                    <div class="image">
+                        <strong>Image:</strong><br>
+                        <img src="${item.image}" alt="${item.name}" style="width: 100%; height: 150px; object-fit: cover; border-radius: 5px; margin-top: 8px;">
+                    </div>
+                    ${item.description ? `<div class="description"><strong>Description:</strong> ${item.description}</div>` : ''}
+                    <div style="margin-top: 12px; display: flex; gap: 5px;">
+                        <button class="btn btn-warning" onclick="prepareUpdateSweet('${item.name}', ${item.id})" style="padding: 5px 10px; font-size: 0.85em; flex: 1;">Edit</button>
+                        <button class="btn btn-danger" onclick="prepareDeleteSweet('${item.name}', ${item.id})" style="padding: 5px 10px; font-size: 0.85em; flex: 1;">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function prepareUpdateSweet(name, id) {
+            document.getElementById('sweets-update-id').value = id;
+            document.getElementById('sweets-update-name').value = name;
+            // Switch to update tab
+            const updateBtn = Array.from(document.querySelectorAll('.sub-tab-button')).find(btn => btn.textContent.includes('Update') && btn.closest('#sweets'));
+            if (updateBtn) updateBtn.click();
+            alert(`Editing item ID: ${id} (${name})`);
+        }
+
+        function prepareDeleteSweet(name, id) {
+            document.getElementById('sweets-delete-id').value = id;
+            // Switch to delete tab
+            const deleteBtn = Array.from(document.querySelectorAll('.sub-tab-button')).find(btn => btn.textContent.includes('Delete') && btn.closest('#sweets'));
+            if (deleteBtn) deleteBtn.click();
+            alert(`Delete item ID: ${id} (${name})`);
+        }
+
+        async function createSingleSweet() {
+            const config = getConfig();
+            const name = document.getElementById('sweets-single-name').value;
+            const price = parseFloat(document.getElementById('sweets-single-price').value);
+            const image = document.getElementById('sweets-single-image').value;
+            const description = document.getElementById('sweets-single-description').value || '';
+
+            if (!name || !price || !image) {
+                alert('Please fill all required fields (name, price, image)');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${config.baseUrl}/api/products/sweets/items`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${config.authToken}`
+                    },
+                    body: JSON.stringify({ name, price, image, description })
+                });
+                const data = await response.json();
+                displayResponse('sweets-post-single-response', data, !response.ok);
+                
+                // Clear form on success
+                if (response.ok) {
+                    document.getElementById('sweets-single-name').value = '';
+                    document.getElementById('sweets-single-price').value = '';
+                    document.getElementById('sweets-single-image').value = '';
+                    document.getElementById('sweets-single-description').value = '';
+                }
+            } catch (error) {
+                displayResponse('sweets-post-single-response', { error: error.message }, true);
+            }
+        }
+
+        async function createBulkSweet() {
+            const config = getConfig();
+            const bulkData = document.getElementById('sweets-bulk-data').value;
+
+            if (!bulkData) {
+                alert('Please enter JSON data');
+                return;
+            }
+
+            try {
+                const jsonData = JSON.parse(bulkData);
+                const response = await fetch(`${config.baseUrl}/api/products/sweets/data`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${config.authToken}`
+                    },
+                    body: JSON.stringify(jsonData)
+                });
+                const data = await response.json();
+                displayResponse('sweets-post-bulk-response', data, !response.ok);
+            } catch (error) {
+                displayResponse('sweets-post-bulk-response', { error: error.message }, true);
+            }
+        }
+
+        async function updateSweet() {
+            const config = getConfig();
+            const itemId = document.getElementById('sweets-update-id').value;
+            const name = document.getElementById('sweets-update-name').value;
+            const price = document.getElementById('sweets-update-price').value;
+            const image = document.getElementById('sweets-update-image').value;
+            const description = document.getElementById('sweets-update-description').value;
+
+            if (!itemId) {
+                alert('Please enter the item ID');
+                return;
+            }
+
+            const updateData = {};
+            if (name) updateData.name = name;
+            if (price) updateData.price = parseFloat(price);
+            if (image) updateData.image = image;
+            if (description) updateData.description = description;
+
+            try {
+                const response = await fetch(`${config.baseUrl}/api/products/sweets/items/${itemId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${config.authToken}`
+                    },
+                    body: JSON.stringify(updateData)
+                });
+                const data = await response.json();
+                displayResponse('sweets-put-response', data, !response.ok);
+            } catch (error) {
+                displayResponse('sweets-put-response', { error: error.message }, true);
+            }
+        }
+
+        async function deleteSweet() {
+            const config = getConfig();
+            const itemId = document.getElementById('sweets-delete-id').value;
+
+            if (!itemId) {
+                alert('Please enter the item ID');
+                return;
+            }
+
+            if (!confirm(`Are you sure you want to delete item ID: ${itemId}?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${config.baseUrl}/api/products/sweets/items/${itemId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${config.authToken}`
+                    }
+                });
+                const data = await response.json();
+                displayResponse('sweets-delete-response', data, !response.ok);
+            } catch (error) {
+                displayResponse('sweets-delete-response', { error: error.message }, true);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -14,6 +14,11 @@ class UserLoginSchema(Schema):
     password: str
 
 
+class AdminLoginSchema(Schema):
+    username: str
+    password: str
+
+
 class UserOutSchema(Schema):
     id: int
     phone: str

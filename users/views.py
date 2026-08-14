@@ -1,11 +1,11 @@
-from ninja import Router
+from ninja import Router, Schema
 from ninja.security import HttpBearer
 from django.contrib.auth import authenticate, get_user_model
 from django.shortcuts import get_object_or_404
 from ninja_jwt.tokens import RefreshToken
 from .schemas import (
     UserRegisterSchema, UserLoginSchema, UserOutSchema,
-    TokenSchema, ErrorSchema, MessageSchema
+    TokenSchema, ErrorSchema, MessageSchema, AdminLoginSchema
 )
 
 User = get_user_model()
@@ -80,6 +80,24 @@ def login(request, payload: UserLoginSchema):
         }
     except User.DoesNotExist:
         return 401, {"error": "Invalid credentials"}
+
+
+@router.post("/admin-login", response={200: TokenSchema, 401: ErrorSchema})
+def admin_login(request, payload: AdminLoginSchema):
+    """Login for admin/superuser using username and password"""
+    authenticated_user = authenticate(username=payload.username, password=payload.password)
+    
+    if not authenticated_user:
+        return 401, {"error": "Invalid credentials"}
+    
+    if not authenticated_user.is_staff and not authenticated_user.is_superuser:
+        return 401, {"error": "Admin access required"}
+
+    refresh = RefreshToken.for_user(authenticated_user)
+    return 200, {
+        "access": str(refresh.access_token),
+        "refresh": str(refresh),
+    }
 
 
 @router.get("/me", response=UserOutSchema, auth=AuthBearer())
